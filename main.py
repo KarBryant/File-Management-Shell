@@ -1,6 +1,11 @@
+from shell import App_Shell
+
 def main():
 
-    print("Hello")
+    app = App_Shell()
+    app.cmdloop()
+    
+    
 
 if __name__ == "__main__":
     main()
