@@ -1,8 +1,6 @@
 import cmd
 import shlex
-import sys
 import os
-import subprocess
 from utils import ascii_box
 
 class App_Shell(cmd.Cmd):
@@ -10,10 +8,19 @@ class App_Shell(cmd.Cmd):
         super().__init__(completekey, stdin, stdout)
         self.prompt = "File Sorter: >> "
         self.current_dir = os.getcwd()
+        self.trash_dir = os.path.expanduser("~/Shell_Trash/")
 
+        if os.path.exists(self.trash_dir) == False:
+            try:
+                os.mkdir(self.trash_dir)
+            except Exception as e:
+                print(e)
+            
+        
     @ascii_box()
     def do_ls(self, arg=None):
         try:
+            print(self.trash_dir)
             args = shlex.split(arg, posix=True)
             if len(args) > 0:
                 print(args)
@@ -28,7 +35,7 @@ class App_Shell(cmd.Cmd):
     def do_pwd(self, arg=None):
         try:
             args = shlex.split(arg, posix=True)
-            result = os.getcwd()
+            result = self.current_dir
             return result
             
 
@@ -40,7 +47,9 @@ class App_Shell(cmd.Cmd):
         try:
             args = shlex.split(arg, posix=True)
             os.chdir(args[0])
-            return f"Location Changed to: {os.getcwd()}"
+            self.current_dir = os.getcwd()
+
+            return f"Location Changed to: {self.current_dir}"
 
         except Exception as e:
             print(e)
