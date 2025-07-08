@@ -3,6 +3,7 @@ import shlex
 import sys
 import os
 import subprocess
+from utils import ascii_box
 
 class App_Shell(cmd.Cmd):
     def __init__(self, completekey = "tab", stdin = None, stdout = None):
@@ -10,31 +11,46 @@ class App_Shell(cmd.Cmd):
         self.prompt = "File Sorter: >> "
         self.current_dir = os.getcwd()
 
-    def do_ls(self, arg):
+    @ascii_box()
+    def do_ls(self, arg=None):
         try:
             args = shlex.split(arg, posix=True)
-            print(os.listdir())
+            if len(args) > 0:
+                print(args)
+                return os.listdir(args[0])
+
+            return os.listdir()
 
         except Exception as e:
             print(e)   
-        
-    def do_pwd(self, arg):
+
+    @ascii_box()  
+    def do_pwd(self, arg=None):
         try:
             args = shlex.split(arg, posix=True)
-            result = subprocess.run("pwd",shell=True,check=True,capture_output=True)
-            print(result.stdout[2:-1])
+            result = os.getcwd()
+            return result
             
 
         except Exception as e:
             print(e)   
-        
+   
+    @ascii_box()
     def do_cd(self, arg):
         try:
             args = shlex.split(arg, posix=True)
             os.chdir(args[0])
+            return f"Location Changed to: {os.getcwd()}"
 
         except Exception as e:
-            print(e)   
+            print(e)
+
+    def do_clear(self,arg):
+        try:
+            os.system("clear")
+
+        except Exception as e:
+            print(e)
         
     def do_exit(self, arg):
         "Exit Shell"
